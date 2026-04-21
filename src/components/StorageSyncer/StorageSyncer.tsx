@@ -3,19 +3,18 @@
 import { useEffect } from 'react'
 import { useSandpack } from '@codesandbox/sandpack-react'
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback'
-import { setStoredFiles } from '@/lib/storage'
-import type { SandboxId } from '@/lib/types'
+import { setInstanceFiles } from '@/lib/storage'
 
 interface StorageSyncerProps {
-  sandboxId: SandboxId
+  instanceId: string
 }
 
-export function StorageSyncer({ sandboxId }: StorageSyncerProps) {
+export function StorageSyncer({ instanceId }: StorageSyncerProps) {
   const { sandpack } = useSandpack()
 
   const save = useDebouncedCallback(
     (files: Record<string, string>) => {
-      setStoredFiles(sandboxId, files)
+      setInstanceFiles(instanceId, files)
     },
     600
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   SandpackProvider,
   SandpackLayout,
@@ -14,9 +14,9 @@ import { StorageSyncer } from '@/components/StorageSyncer/StorageSyncer'
 import { useSandboxStorage } from '@/hooks/useSandboxStorage'
 import { useFormatCode } from '@/hooks/useFormatCode'
 import { useFullscreen } from '@/hooks/useFullscreen'
-import { clearStoredFiles } from '@/lib/storage'
+import { clearInstanceFiles } from '@/lib/storage'
 import { claudeCompletionExtension } from '@/extensions/claudeCompletion'
-import type { SandboxWorkspaceProps, SandboxId } from '@/lib/types'
+import type { SandboxWorkspaceProps } from '@/lib/types'
 import styles from './SandboxWorkspace.module.css'
 
 const CONSOLE_HEIGHT = 200
@@ -24,10 +24,10 @@ const MIN_SPLIT = 20
 const MAX_SPLIT = 80
 
 interface WorkspaceContentProps {
-  sandboxId: SandboxId
+  instanceId: string
 }
 
-function WorkspaceContent({ sandboxId }: WorkspaceContentProps) {
+function WorkspaceContent({ instanceId }: WorkspaceContentProps) {
   const { sandpack } = useSandpack()
   const { format, isFormatting } = useFormatCode()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -39,9 +39,26 @@ function WorkspaceContent({ sandboxId }: WorkspaceContentProps) {
   const [split, setSplit] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!e.metaKey || !e.shiftKey) return
+      if (e.key !== ']' && e.key !== '[') return
+      e.preventDefault()
+      const files = sandpack.visibleFiles
+      const current = files.indexOf(sandpack.activeFile)
+      if (current === -1) return
+      const next = e.key === ']'
+        ? (current + 1) % files.length
+        : (current - 1 + files.length) % files.length
+      sandpack.setActiveFile(files[next])
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [sandpack])
+
   const handleReset = () => {
     sandpack.resetAllFiles()
-    clearStoredFiles(sandboxId)
+    clearInstanceFiles(instanceId)
   }
 
   const handleDragStart = (e: React.MouseEvent) => {
@@ -70,9 +87,8 @@ function WorkspaceContent({ sandboxId }: WorkspaceContentProps) {
 
   const layoutHeight = isFullscreen
     ? `calc(100vh - var(--toolbar-height) - ${showConsole ? CONSOLE_HEIGHT : 0}px)`
-    : `calc(100vh - var(--tabs-height) - var(--toolbar-height) - ${showConsole ? CONSOLE_HEIGHT : 0}px)`
+    : `calc(100vh - var(--tabs-height) - var(--instance-tabs-height) - var(--toolbar-height) - ${showConsole ? CONSOLE_HEIGHT : 0}px)`
 
-  // --split is set on .inner so both the headerBar and splitContainer can read it
   return (
     <div
       ref={containerRef}
@@ -96,8 +112,6 @@ function WorkspaceContent({ sandboxId }: WorkspaceContentProps) {
         </div>
       </div>
 
-      {/* SandpackLayout stays in the tree — required for preview initialization.
-          The drag handle is absolutely positioned over the split boundary. */}
       <div
         ref={splitRef}
         className={`${styles.splitContainer} ${isDragging ? styles.dragging : ''}`}
@@ -130,15 +144,14 @@ function WorkspaceContent({ sandboxId }: WorkspaceContentProps) {
   )
 }
 
-export function SandboxWorkspace({ template, isVisible }: SandboxWorkspaceProps) {
-  const initialFiles = useSandboxStorage(template.id)
+export function SandboxWorkspace({ template, instanceId }: SandboxWorkspaceProps) {
+  const initialFiles = useSandboxStorage(template.id, instanceId)
 
   return (
     <div
-      id={`workspace-${template.id}`}
+      id={`workspace-${instanceId}`}
       role="tabpanel"
-      aria-labelledby={`tab-${template.id}`}
-      className={`${styles.workspace} ${!isVisible ? styles.hidden : ''}`}
+      className={styles.workspace}
     >
       <SandpackProvider
         template="react"
@@ -152,8 +165,8 @@ export function SandboxWorkspace({ template, isVisible }: SandboxWorkspaceProps)
           activeFile: '/App.js',
         }}
       >
-        <StorageSyncer sandboxId={template.id} />
-        <WorkspaceContent sandboxId={template.id} />
+        <StorageSyncer instanceId={instanceId} />
+        <WorkspaceContent instanceId={instanceId} />
       </SandpackProvider>
     </div>
   )

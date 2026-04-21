@@ -1,5 +1,11 @@
 export type SandboxId = 'react' | 'motion'
 
+export interface SandboxInstance {
+  id: string
+  name: string
+  createdAt: number
+}
+
 export interface SandboxTemplate {
   id: SandboxId
   label: string
@@ -17,9 +23,18 @@ export interface SandboxTabsProps {
   onChange: (tab: SandboxId) => void
 }
 
+export interface InstanceTabsProps {
+  instances: SandboxInstance[]
+  activeId: string
+  onSelect: (id: string) => void
+  onCreate: () => void
+  onDelete: (id: string) => void
+  onRename: (id: string, name: string) => void
+}
+
 export interface SandboxWorkspaceProps {
   template: SandboxTemplate
-  isVisible: boolean
+  instanceId: string
 }
 
 export interface PreviewToolbarProps {

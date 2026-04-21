@@ -5,10 +5,6 @@
   flex-direction: column;
 }
 
-.hidden {
-  display: none;
-}
-
 .inner {
   flex: 1;
   min-height: 0;

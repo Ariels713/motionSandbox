@@ -1,0 +1,126 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: var(--instance-tabs-height);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  min-width: 0;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  user-select: none;
+}
+
+.tab:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-active-bg);
+}
+
+.tabActive {
+  color: var(--color-text-primary);
+  background: var(--color-tab-active-bg);
+  border-color: var(--color-border);
+}
+
+.tabName {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.renameInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  width: 120px;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.tab:hover .closeBtn,
+.tabActive .closeBtn {
+  opacity: 1;
+}
+
+.closeBtn:hover {
+  color: var(--color-danger);
+}
+
+.newBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.newBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-active-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .closeBtn,
+  .newBtn {
+    transition: none;
+  }
+}
