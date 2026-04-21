@@ -1,0 +1,113 @@
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none;
+}
+
+.inner {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-fullscreen);
+  background: var(--color-bg);
+}
+
+/* Toolbar row — editorSpacer mirrors editor width via --split */
+.headerBar {
+  display: flex;
+  height: var(--toolbar-height);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-toolbar-bg);
+}
+
+.editorSpacer {
+  flex-shrink: 0;
+  width: var(--split, 50%);
+  border-right: 1px solid var(--color-border);
+}
+
+.previewHeader {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Split container — position: relative so the drag handle can be absolutely positioned */
+.splitContainer {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Disable pointer events during drag so the iframe doesn't eat mouse events */
+.splitContainer.dragging * {
+  pointer-events: none;
+}
+
+/* Override Sandpack's internal flex sizing to respect --split */
+.splitContainer :global(.sp-editor) {
+  flex: none !important;
+  width: var(--split, 50%) !important;
+  min-width: 0 !important;
+}
+
+.splitContainer :global(.sp-preview-container) {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* Drag handle — absolutely positioned at the split boundary */
+.dragHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split, 50%);
+  width: 8px;
+  margin-left: -4px;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+}
+
+.dragHandle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--color-border);
+  transition: background var(--transition-fast);
+}
+
+.dragHandle:hover::after,
+.splitContainer.dragging .dragHandle::after {
+  background: var(--color-accent);
+}
+
+/* Console panel */
+.consolePanel {
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dragHandle::after {
+    transition: none;
+  }
+}
