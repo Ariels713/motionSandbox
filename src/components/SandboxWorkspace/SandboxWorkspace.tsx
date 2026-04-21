@@ -16,6 +16,7 @@ import { useFormatCode } from '@/hooks/useFormatCode'
 import { useFullscreen } from '@/hooks/useFullscreen'
 import { clearInstanceFiles } from '@/lib/storage'
 import { claudeCompletionExtension } from '@/extensions/claudeCompletion'
+import { emmetExtension } from '@/extensions/emmet'
 import type { SandboxWorkspaceProps } from '@/lib/types'
 import styles from './SandboxWorkspace.module.css'
 
@@ -127,7 +128,7 @@ function WorkspaceContent({ instanceId }: WorkspaceContentProps) {
             showLineNumbers={showLineNumbers}
             showTabs
             closableTabs={false}
-            extensions={claudeCompletionExtension}
+            extensions={[...claudeCompletionExtension, ...emmetExtension]}
           />
           <SandpackPreview showNavigator={false} showRefreshButton={false} />
         </SandpackLayout>
