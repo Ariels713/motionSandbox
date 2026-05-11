@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import {
   SandpackProvider,
   SandpackLayout,
@@ -147,6 +147,7 @@ function WorkspaceContent({ instanceId }: WorkspaceContentProps) {
 
 export function SandboxWorkspace({ template, instanceId }: SandboxWorkspaceProps) {
   const initialFiles = useSandboxStorage(template.id, instanceId)
+  const customSetup = useMemo(() => ({ dependencies: template.dependencies }), [template.id])
 
   return (
     <div
@@ -157,7 +158,7 @@ export function SandboxWorkspace({ template, instanceId }: SandboxWorkspaceProps
       <SandpackProvider
         template="react"
         files={initialFiles}
-        customSetup={{ dependencies: template.dependencies }}
+        customSetup={customSetup}
         theme="dark"
         options={{
           recompileMode: 'delayed',
