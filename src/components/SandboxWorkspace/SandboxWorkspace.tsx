@@ -163,7 +163,7 @@ export function SandboxWorkspace({ template, instanceId }: SandboxWorkspaceProps
         options={{
           recompileMode: 'delayed',
           recompileDelay: 500,
-          visibleFiles: ['/App.js', '/styles.module.css'],
+          visibleFiles: ['/App.js', '/styles.module.css', '/global.css'],
           activeFile: '/App.js',
         }}
       >

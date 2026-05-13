@@ -1,6 +1,18 @@
 import type { SandboxTemplate } from './types'
 
+const globalCss = `/* Register CSS custom properties here.
+   These apply globally to the preview.
+
+@property --my-prop {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+*/
+`
+
 const reactAppCode = `// import { random, range } from 'lodash'
+import './global.css'
 import styles from './styles.module.css'
 
 export default function App() {
@@ -31,6 +43,7 @@ const reactStyles = `.container {
 
 const motionAppCode = `// import { random, range } from 'lodash'
 import { motion } from 'motion/react'
+import './global.css'
 import styles from './styles.module.css'
 
 export default function App() {
@@ -79,6 +92,7 @@ export const REACT_TEMPLATE: SandboxTemplate = {
   files: {
     '/App.js': reactAppCode,
     '/styles.module.css': reactStyles,
+    '/global.css': globalCss,
   },
   dependencies: {
     lodash: 'latest',
@@ -91,6 +105,7 @@ export const MOTION_TEMPLATE: SandboxTemplate = {
   files: {
     '/App.js': motionAppCode,
     '/styles.module.css': motionStyles,
+    '/global.css': globalCss,
   },
   dependencies: {
     motion: 'latest',
